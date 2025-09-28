@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Vibes - Your Personal Blog</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        
+        :root {
+            --bg-cream: #F9F6F2;
+            --text-espresso: #2A1B0E;
+            --text-latte: #5D4037;
+            --brand-brown: #6F4E37;
+            --brand-caramel: #C8A280;
+            --surface-white: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--text-latte);
+           
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-size: cover;
+            background-blend-mode: overlay;
+        }
+        h1, h2, h3, h4, .font-lora {
+            font-family: 'Lora', serif;
+            color: var(--text-espresso);
+        }
+       
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #FDFBF8; }
+        ::-webkit-scrollbar-thumb { background: var(--brand-caramel); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--brand-brown); }
+        .hidden { display: none; }
+        
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes scaleOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.95); }
+        }
+        
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .animate-fade-out { animation: fadeOut 0.3s ease-out forwards; }
+        .modal-content-animation-in { animation: scaleIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+        .modal-content-animation-out { animation: scaleOut 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+
+       
+        #post-grid {
+            column-count: 1;
+            column-gap: 2rem;
+        }
+        @media (min-width: 768px) { #post-grid { column-count: 2; } }
+        @media (min-width: 1024px) { #post-grid { column-count: 3; } }
+        
+        .post-card {
+            break-inside: avoid;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px -10px rgba(111, 78, 55, 0.2);
+        }
+
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(111, 78, 55, 0.25);
+        }
+        .btn-primary:active {
+            transform: translateY(0) scale(0.98);
+        }
+        .input-field:focus {
+            border-color: var(--brand-caramel);
+            box-shadow: 0 0 0 3px rgba(200, 162, 128, 0.3);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    
+    <div id="app">
+
+        
+        <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-40">
+            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#feed" class="text-3xl font-lora font-bold text-[--brand-brown] transition-transform duration-300 hover:scale-105">POST IT</a>
+                <div id="nav-links" class="flex items-center space-x-6">
+                    
+                </div>
+            </nav>
+        </header>
+
+        
+        <main class="container mx-auto px-6 py-8">
+
+           
+            <section id="feed-view">
+                <h2 class="text-4xl font-lora text-center mb-8">Community Feed</h2>
+                <div id="post-grid">
+                    
+                </div>
+            </section>
+
+            
+            <section id="login-view" class="hidden">
+                 <div class="max-w-md mx-auto mt-12 bg-white p-8 rounded-xl shadow-2xl animate-fade-in">
+                    <h2 class="text-3xl font-lora text-center mb-6">Welcome Back</h2>
+                    <form id="login-form">
+                        <input type="email" id="login-email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-100/50 rounded-lg border-2 border-transparent transition-all duration-300 input-field mb-4">
+                        <input type="password" id="login-password" placeholder="Password" required class="w-full px-4 py-3 bg-gray-100/50 rounded-lg border-2 border-transparent transition-all duration-300 input-field mb-6">
+                        <button type="submit" class="font-bold py-3 px-6 rounded-lg transition-all duration-300 ease-in-out bg-[#6F4E37] text-white btn-primary w-full">Login</button>
+                    </form>
+                    <p class="text-center mt-6">Don't have an account? <a href="#signup" class="font-bold text-[--brand-brown] hover:underline">Sign up</a></p>
+                </div>
+            </section>
+
+            
+            <section id="signup-view" class="hidden">
+                <div class="max-w-md mx-auto mt-12 bg-white p-8 rounded-xl shadow-2xl animate-fade-in">
+                    <h2 class="text-3xl font-lora text-center mb-6">Create Your Account</h2>
+                    <form id="signup-form">
+                        <input type="text" id="signup-name" placeholder="Full Name" required class="w-full px-4 py-3 bg-gray-100/50 rounded-lg border-2 border-transparent transition-all duration-300 input-field mb-4">
+                        <input type="email" id="signup-email" placeholder="Email Address" required class="w-full px-4 py-3 bg-gray-100/50 rounded-lg border-2 border-transparent transition-all duration-300 input-field mb-4">
+                        <input type="password" id="signup-password" placeholder="Create Password" required class="w-full px-4 py-3 bg-gray-100/50 rounded-lg border-2 border-transparent transition-all duration-300 input-field mb-6">
+                        <button type="submit" class="font-bold py-3 px-6 rounded-lg transition-all duration-300 ease-in-out bg-[#6F4E37] text-white btn-primary w-full">Sign Up</button>
+                    </form>
+                     <p class="text-center mt-6">Already have an account? <a href="#login" class="font-bold text-[--brand-brown] hover:underline">Login</a></p>
+                </div>
+            </section>
+
+        </main>
+
+        
+        <button id="add-post-btn" class="fixed bottom-8 right-8 bg-[--brand-brown] text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 transform hover:scale-110 hover:shadow-2xl z-30">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z" /></svg>
+        </button>
+        
+        
+        <footer class="bg-[--brand-brown] text-white text-center p-4 mt-12">
+             <p>© 2025 POST IT. All rights reserved.</p>
+        </footer>
+
+    </div>
+
+    
+    <div id="modal-container"></div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            
+            let currentUser = null;
+            let posts = [];
+
+            
+            const app = document.getElementById('app');
+            const navLinks = document.getElementById('nav-links');
+            const postGrid = document.getElementById('post-grid');
+            const modalContainer = document.getElementById('modal-container');
+            const addPostBtn = document.getElementById('add-post-btn');
+            const views = document.querySelectorAll('main > section');
+
+            
+            const initialPosts = [
+                { "title": "The Art of Morning Coffee", "tag": "Lifestyle", "excerpt": "Starting your day with a warm cup of coffee is more than a habit – it’s a ritual...", "content": "Starting your day with a warm cup of coffee is more than a habit – it’s a ritual of mindfulness. The aroma, the taste, and the quiet moment it creates can set the tone for your entire day.", "image": "https://images.unsplash.com/photo-1559496417-e7f25cb247f3?q=80&w=2787&auto=format&fit=crop" },
+                { "title": "Mastering the Perfect Latte Art", "tag": "How-To", "excerpt": "Ever wondered how baristas create those beautiful designs on your latte? It's a skill you can learn...", "content": "Latte art is a mix of science and creativity. It starts with perfectly steamed, silky milk—no big bubbles! Then, it's all about the pour. Start high to mix the milk and espresso, then bring the pitcher close to the surface to let the white foam float on top. A steady hand and a little practice are all you need to create your own hearts and rosettas.", "image": "https://images.unsplash.com/photo-1572442388855-4341e7373be3?q=80&w=2787&auto=format&fit=crop" },
+                { "title": "Boosting Productivity with Coffee Breaks", "tag": "Productivity", "excerpt": "Short breaks with coffee can actually improve focus and energy...", "content": "Instead of working non-stop, taking short coffee breaks can recharge your brain. The caffeine, combined with a moment of relaxation, helps you return to tasks with renewed energy and creativity.", "image": "" },
+                { "title": "How Coffee Connects People", "tag": "Community", "excerpt": "Coffee shops have always been places where friendships brew...", "content": "From first dates to business deals, coffee has been at the center of countless connections. Sharing a cup is more than caffeine – it’s about bonding and creating memories.", "image": "https://images.unsplash.com/photo-1511920183353-3c0f35216592?q=80&w=2787&auto=format&fit=crop" },
+                { "title": "Finding Your Perfect Work Cafe", "tag": "Lifestyle", "excerpt": "The right cafe can be a haven for productivity. Here’s what to look for...", "content": "A great work cafe needs more than just good coffee. Look for reliable Wi-Fi, accessible power outlets, comfortable seating, and a background noise level that helps you focus rather than distracts. Don't forget to be a good customer—buy a drink or a snack every couple of hours!", "image": "" },
+                { "title": "Coffee and Mental Health", "tag": "Well-being", "excerpt": "Did you know moderate coffee consumption can improve your mood?", "content": "Research shows that moderate caffeine intake can reduce feelings of depression and increase alertness. But balance is key – too much caffeine can cause restlessness.", "image": "" },
+                { "title": "Exploring Global Coffee Cultures", "tag": "Travel", "excerpt": "Every country has its unique coffee tradition...", "content": "From Italy’s espresso to Turkey’s strong brew, exploring global coffee cultures introduces you to fascinating traditions and flavors that enrich your coffee journey.", "image": "https://images.unsplash.com/photo-1507133750040-4a8f570215de?q=80&w=2804&auto=format&fit=crop" },
+                { "title": "The Perfect Pastry Pairings", "tag": "Food", "excerpt": "What's a great coffee without the perfect treat to go with it? Explore delicious combinations...", "content": "A buttery croissant is a classic partner for a latte. A rich, dark espresso is beautifully balanced by a sweet almond biscotti. For a simple black coffee, a warm cinnamon roll is pure comfort. The right pairing can elevate your coffee experience from good to unforgettable.", "image": "https://images.unsplash.com/photo-1495474472287-4d713b22e8b4?q=80&w=2940&auto=format&fit=crop" },
+                { "title": "The Science of Brewing", "tag": "Science", "excerpt": "Brewing coffee is both an art and science...", "content": "The grind size, water temperature, and brewing time all play a role in flavor. Small changes in these factors can transform an ordinary cup into a masterpiece.", "image": "" },
+                { "title": "From Bean to Cup: A Journey", "tag": "Education", "excerpt": "Discover the incredible journey a coffee bean takes before it ends up in your morning mug.", "content": "It all starts on a coffee plant, often grown in mountainous regions. The coffee 'cherries' are picked, processed to remove the fruit, dried, and then roasted. Roasting is where the magic happens, transforming the green bean into the brown, aromatic bean we all know and love. Each step has a profound impact on the final taste.", "image": "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=2940&auto=format&fit=crop" },
+                { "title": "A Good Book and a Warm Cup", "tag": "Relaxation", "excerpt": "There are few simpler pleasures than getting lost in a good book with a coffee by your side.", "content": "The quiet ritual of turning pages, the comforting aroma of freshly brewed coffee, the warmth of the mug in your hands—it's a perfect recipe for relaxation and escaping the hustle and bustle of daily life. It's a small, accessible luxury that feels wonderfully indulgent.", "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=2874&auto=format&fit=crop" },
+                { "title": "The History of the Coffeehouse", "tag": "History", "excerpt": "Coffeehouses were once the epicenters of ideas, debate, and revolution.", "content": "Long before they were quiet places to work, coffeehouses in the 17th and 18th centuries were bustling hubs of intellectual and political life. Known as 'penny universities,' a cup of coffee could grant you access to brilliant conversations and the latest news, shaping the course of history in the process.", "image": "" }
+            ];
+
+            
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]]; 
+                }
+            }
+
+            
+
+            function init() {
+                currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                const savedPosts = JSON.parse(localStorage.getItem('posts'));
+                
+                
+                shuffleArray(initialPosts);
+
+                posts = savedPosts && savedPosts.length > 0 ? savedPosts : initialPosts;
+                localStorage.setItem('posts', JSON.stringify(posts));
+
+                setupEventListeners();
+                
+                window.addEventListener('hashchange', handleRouteChange);
+                handleRouteChange(); 
+
+                updateUI();
+            }
+
+            function updateUI() {
+                updateHeader();
+                renderFeedWithSkeletons();
+            }
+
+            
+            
+            function handleRouteChange() {
+                const hash = window.location.hash || '#feed';
+                showView(hash.substring(1) + '-view');
+            }
+
+            function showView(viewId) {
+                views.forEach(view => view.classList.add('hidden'));
+                const activeView = document.getElementById(viewId);
+                if (activeView) {
+                    activeView.classList.remove('hidden');
+                } else {
+                    document.getElementById('feed-view').classList.remove('hidden');
+                }
+            }
+
+            
+
+            function updateHeader() {
+                if (currentUser) {
+                    navLinks.innerHTML = `
+                        <span class="font-semibold text-[--text-espresso]">Hi, ${currentUser.name.split(' ')[0]}</span>
+                        <a href="#" id="logout-btn" class="font-medium text-[--text-latte] hover:text-[--brand-brown] transition-colors relative after:content-[''] after:absolute after:w-full after:h-0.5 after:bottom-0 after:left-0 after:bg-[--brand-brown] after:scale-x-0 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left">Logout</a>
+                    `;
+                } else {
+                    navLinks.innerHTML = `
+                        <a href="#login" class="font-medium text-[--text-latte] hover:text-[--brand-brown] transition-colors relative after:content-[''] after:absolute after:w-full after:h-0.5 after:bottom-0 after:left-0 after:bg-[--brand-brown] after:scale-x-0 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left">Login</a>
+                        <a href="#signup" class="font-bold py-3 px-6 rounded-lg transition-all duration-300 ease-in-out bg-[#6F4E37] text-white btn-primary">Sign Up</a>
+                    `;
+                }
+            }
+
+            function renderFeedWithSkeletons() {
+                postGrid.innerHTML = '';
+                
+                for (let i = 0; i < 6; i++) {
+                    const skeletonEl = document.createElement('div');
+                    skeletonEl.className = 'post-card bg-white rounded-xl shadow-lg overflow-hidden';
+                    skeletonEl.innerHTML = `
+                        <div class="animate-pulse flex flex-col">
+                            <div class="bg-gray-200 h-48 w-full"></div>
+                            <div class="p-6 space-y-4">
+                                <div class="h-2 bg-gray-200 rounded w-1/4"></div>
+                                <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                                <div class="h-2 bg-gray-200 rounded"></div>
+                                <div class="h-2 bg-gray-200 rounded w-5/6"></div>
+                            </div>
+                        </div>
+                    `;
+                    postGrid.appendChild(skeletonEl);
+                }
+
+                
+                setTimeout(() => {
+                    renderFeed();
+                }, 800);
+            }
+
+            function renderFeed() {
+                postGrid.innerHTML = '';
+                posts.forEach((post, index) => {
+                    const postEl = document.createElement('div');
+                    postEl.className = 'post-card bg-white rounded-xl overflow-hidden cursor-pointer';
+                    postEl.style.opacity = 0;
+                    postEl.style.animation = `fadeIn 0.5s ease ${index * 0.05}s forwards`;
+                    
+                    const imageHTML = post.image ? `<div class="overflow-hidden"><img src="${post.image}" alt="${post.title}" class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.style.display='none'"></div>` : '';
+
+                    postEl.innerHTML = `
+                        <div class="group">
+                            ${imageHTML}
+                            <div class="p-6">
+                                <p class="text-sm font-bold text-[--brand-caramel] mb-2">#${post.tag}</p>
+                                <h3 class="font-lora text-2xl font-bold mb-3">${post.title}</h3>
+                                <p class="text-[--text-latte] leading-relaxed">${post.excerpt}</p>
+                            </div>
+                        </div>
+                    `;
+                    postEl.addEventListener('click', () => handlePostClick(index));
+                    postGrid.appendChild(postEl);
+                });
+            }
+
+            
+
+            function setupEventListeners() {
+                navLinks.addEventListener('click', (e) => {
+                    if (e.target.id === 'logout-btn') {
+                        e.preventDefault();
+                        handleLogout();
+                    }
+                });
+
+                document.getElementById('login-form').addEventListener('submit', handleLogin);
+                document.getElementById('signup-form').addEventListener('submit', handleSignup);
+                addPostBtn.addEventListener('click', handleAddPostClick);
+            }
+
+            function handleLogin(e) {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                
+                const user = users.find(u => u.email === email && u.password === password);
+
+                if (user) {
+                    currentUser = user;
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    window.location.hash = '#feed';
+                    updateUI();
+                } else {
+                    showInfoModal('Login Failed', 'Invalid email or password. Please try again.');
+                }
+            }
+
+            function handleSignup(e) {
+                e.preventDefault();
+                const name = document.getElementById('signup-name').value;
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+
+                if (users.some(u => u.email === email)) {
+                    showInfoModal('Signup Failed', 'An account with this email already exists.');
+                    return;
+                }
+
+                const newUser = { name, email, password };
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                showInfoModal('Success!', 'Your account has been created. Please log in.', () => {
+                    window.location.hash = '#login';
+                });
+            }
+
+            function handleLogout() {
+                currentUser = null;
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('guestReadCount'); 
+                window.location.hash = '#feed';
+                updateUI();
+            }
+            
+            function handlePostClick(index) {
+                if (currentUser) {
+                    showPostModal(posts[index]);
+                } else {
+                    let guestReadCount = parseInt(localStorage.getItem('guestReadCount') || '0');
+                    if (guestReadCount < 5) {
+                        guestReadCount++;
+                        localStorage.setItem('guestReadCount', guestReadCount);
+                        showPostModal(posts[index]);
+                    } else {
+                        showLimitModal();
+                    }
+                }
+            }
+
+            function handleAddPostClick() {
+                if (currentUser) {
+                    showCreatePostModal();
+                } else {
+                    showInfoModal(
+                        'Login Required', 
+                        'You need to be logged in to create a post.',
+                        () => window.location.hash = '#login'
+                    );
+                }
+            }
+
+            function handlePublishPost() {
+                const title = document.getElementById('post-title').value;
+                const tag = document.getElementById('post-tag').value;
+                const content = document.getElementById('post-content').value;
+                const image = document.getElementById('post-image').value;
+
+                if (!title || !tag || !content) {
+                    showInfoModal('Oops!', 'Please fill out the title, tag, and content fields.');
+                    return;
+                }
+
+                const newPost = {
+                    title,
+                    tag,
+                    content,
+                    excerpt: content.substring(0, 100) + '...',
+                    image: image || '' 
+                };
+
+                posts.unshift(newPost);
+                localStorage.setItem('posts', JSON.stringify(posts));
+                renderFeed();
+                closeModal();
+            }
+
+            
+
+            function showPostModal(post) {
+                const imageHTML = post.image ? `<img src="${post.image}" alt="${post.title}" class="w-full h-64 object-cover rounded-t-lg mb-6" onerror="this.style.display='none'">` : '';
+                modalContainer.innerHTML = `
+                    <div class="modal-bg fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+                        <div class="modal-content bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative modal-content-animation-in">
+                            <button class="close-modal-btn absolute top-4 right-4 text-3xl text-gray-400 hover:text-gray-800 z-10 transition-transform duration-300 hover:scale-125">&times;</button>
+                            ${imageHTML}
+                            <div class="p-8">
+                                <p class="text-sm font-bold text-[--brand-caramel] mb-2">#${post.tag}</p>
+                                <h2 class="text-4xl font-lora font-bold mb-4">${post.title}</h2>
+                                <p class="text-[--text-latte] leading-relaxed whitespace-pre-wrap">${post.content}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                modalContainer.querySelector('.close-modal-btn').addEventListener('click', closeModal);
+            }
+
+            function showLimitModal() {
+                 modalContainer.innerHTML = `
+                    <div class="modal-bg fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+                        <div class="modal-content bg-white rounded-lg shadow-2xl max-w-lg w-full text-center p-8 modal-content-animation-in">
+                            <h2 class="text-3xl font-lora font-bold mb-4">Read Limit Reached</h2>
+                            <p class="mb-6">You've read your 5 free articles. Please sign up or log in to continue reading and join our community!</p>
+                            <div class="flex justify-center space-x-4">
+                                <a href="#login" onclick="closeModal()" class="font-bold py-3 px-6 rounded-lg transition-all duration-300 ease-in-out bg-gray-200 text-gray-800 hover:bg-gray-300">Login</a>
+                                <a href="#signup" onclick="closeModal()" class="font-bold py-3 px-6 rounded-lg transition-all duration-300 ease-in-out bg-[#6F4E37] text-white btn-primary">Sign Up</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function showCreatePostModal() {
+                modalContainer.innerHTML = `
+                     <div class="modal-bg fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+                        <div class="modal-content bg-white rounded-lg shadow-2xl max-w-2xl w-full p-8 relative modal-content-animation-in">
+                             <button class="close-modal-btn absolute top-4 right-4 text-3xl text-gray-400 hover:text-gray-800 transition-transform duration-300 hover:scale-125">&times;</button>
+                             <h2 class="text-3xl font-lora font-bold mb-6">Create a New Post</h2>
+                             <input id="post-title" type="text" placeholder="Post Title" class="w-full px-4 py-3 bg-gray-100/50 rounded-lg border-2 border-transparent transition-all duration-300 input-field mb-4">
+                             <input id="post-tag" type="text" placeholder="Tag (e.g., Lifestyle)" class="w-full px-4 py-3 bg-gray-100/50 rounded-lg border-2 border-transparent transition-all duration-300 input-field mb-4">
+                             <input id="post-image" type="url" placeholder="Image URL (optional)" class="w-full px-4 py-3 bg-gray-100/50 rounded-lg border-2 border-transparent transition-all duration-300 input-field mb-4">
+                             <textarea id="post-content" rows="6" placeholder="Write your article here..." class="w-full px-4 py-3 bg-gray-100/50 rounded-lg border-2 border-transparent transition-all duration-300 input-field mb-6"></textarea>
+                             <button id="publish-post-btn" class="font-bold py-3 px-6 rounded-lg transition-all duration-300 ease-in-out bg-[#6F4E37] text-white btn-primary w-full">Publish Post</button>
+                        </div>
+                    </div>
+                `;
+                modalContainer.querySelector('.close-modal-btn').addEventListener('click', closeModal);
+                modalContainer.querySelector('#publish-post-btn').addEventListener('click', handlePublishPost);
+            }
+            
+            function showInfoModal(title, message, callback) {
+                modalContainer.innerHTML = `
+                    <div class="modal-bg fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+                        <div class="modal-content bg-white rounded-lg shadow-2xl max-w-md w-full text-center p-8 modal-content-animation-in">
+                             <h2 class="text-2xl font-lora font-bold mb-4">${title}</h2>
+                             <p class="mb-6">${message}</p>
+                             <button class="info-modal-ok-btn font-bold py-3 px-6 rounded-lg transition-all duration-300 ease-in-out bg-[#6F4E37] text-white btn-primary">OK</button>
+                        </div>
+                    </div>
+                `;
+                modalContainer.querySelector('.info-modal-ok-btn').addEventListener('click', () => {
+                    closeModal();
+                    if (callback) callback();
+                });
+            }
+
+            
+            window.closeModal = function() {
+                const modalBg = modalContainer.querySelector('.modal-bg');
+                const modalContent = modalContainer.querySelector('.modal-content');
+                if (modalBg && modalContent) {
+                    modalBg.classList.remove('animate-fade-in');
+                    modalBg.classList.add('animate-fade-out');
+                    modalContent.classList.remove('modal-content-animation-in');
+                    modalContent.classList.add('modal-content-animation-out');
+                    setTimeout(() => {
+                        modalContainer.innerHTML = '';
+                    }, 300); 
+                }
+            }
+
+            
+            init();
+        });
+    </script>
+</body>
+</html>
