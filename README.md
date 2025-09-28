@@ -1,5 +1,7 @@
 Personal-Blog-Frontend-Project
+
 ☕ Coffee Vibes - A Modern Personal Blog
+
 A cozy, fully-responsive personal blog website designed with a warm coffee-shop aesthetic. This project is a single-page application built with vanilla HTML, CSS, and JavaScript, focusing on a clean user interface, smooth animations, and a realistic user experience.
 
 ✨ Core Features
